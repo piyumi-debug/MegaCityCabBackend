@@ -1,4 +1,4 @@
-package com.megacitycab.backend.controller;
+package com.megacitycab.backendd.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

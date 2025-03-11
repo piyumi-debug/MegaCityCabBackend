@@ -1,7 +1,7 @@
-package com.megacitycab.backend.controller;
+package com.megacitycab.backendd.controller;
 
-import com.megacitycab.backend.model.Booking;
-import com.megacitycab.backend.repository.BookingRepository;
+import com.megacitycab.backendd.model.Booking;
+import com.megacitycab.backendd.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,44 +16,21 @@ public class AdminBookingController {
     @Autowired
     private BookingRepository bookingRepository;
 
-    // Update booking status
-    @PutMapping("/{bookingId}/status")
-    public ResponseEntity<Booking> updateBookingStatus(
-            @PathVariable String bookingId,
+    @GetMapping
+    public ResponseEntity<?> getAllPendingBookings() {
+        return ResponseEntity.ok(bookingRepository.findByStatus("pending"));
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<String> updateBookingStatus(
+            @PathVariable String id,
             @RequestParam String status) {
-        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
-        if (bookingOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        Booking booking = bookingOptional.get();
-        booking.setStatus(status);
-        Booking updatedBooking = bookingRepository.save(booking);
-        return ResponseEntity.ok(updatedBooking);
-    }
-
-    // Confirm a booking
-    @PutMapping("/{id}/confirm")
-    public ResponseEntity<String> confirmBooking(@PathVariable String id) {
-        Optional<Booking> bookingOptional = bookingRepository.findById(id);
-        if (bookingOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
-        }
-        Booking booking = bookingOptional.get();
-        booking.setStatus("confirmed");
-        bookingRepository.save(booking);
-        return ResponseEntity.ok("Booking confirmed successfully");
-    }
-
-    // Decline a booking
-    @PutMapping("/{id}/decline")
-    public ResponseEntity<String> declineBooking(@PathVariable String id) {
-        Optional<Booking> bookingOptional = bookingRepository.findById(id);
-        if (bookingOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
-        }
-        Booking booking = bookingOptional.get();
-        booking.setStatus("declined");
-        bookingRepository.save(booking);
-        return ResponseEntity.ok("Booking declined successfully");
+        return bookingRepository.findById(id)
+                .map(booking -> {
+                    booking.setStatus(status);
+                    bookingRepository.save(booking);
+                    return ResponseEntity.ok("Booking status updated successfully");
+                })
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found"));
     }
 }

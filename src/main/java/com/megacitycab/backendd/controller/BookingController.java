@@ -1,13 +1,13 @@
-package com.megacitycab.backend.controller;
+package com.megacitycab.backendd.controller;
 
-import com.megacitycab.backend.model.Booking;
-import com.megacitycab.backend.repository.BookingRepository;
+import com.megacitycab.backendd.model.Booking;
+import com.megacitycab.backendd.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -16,38 +16,45 @@ public class BookingController {
     @Autowired
     private BookingRepository bookingRepository;
 
-    // Add a new booking
+    // Create a new booking
     @PostMapping
-    public ResponseEntity<String> addBooking(@RequestBody Booking booking) {
-        try {
-            System.out.println("Received booking data: " + booking);
-            booking.setStatus("pending"); // Set default status to "pending"
-            bookingRepository.save(booking);
-            return ResponseEntity.ok("Booking added successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Failed to add booking");
-        }
+    public Booking createBooking(@RequestBody Booking booking) {
+        booking.setStatus("Pending");
+        return bookingRepository.save(booking);
     }
 
-    // Get all bookings
+    // Get all bookings (for admin dashboard)
     @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookings() {
-        return ResponseEntity.ok(bookingRepository.findAll());
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
     }
 
-    // Update booking status
-    @PutMapping("/{id}/status")
-    public ResponseEntity<String> updateBookingStatus(
-            @PathVariable String id,
-            @RequestParam String status) {
-        Optional<Booking> bookingOptional = bookingRepository.findById(id);
-        if (bookingOptional.isEmpty()) {
-            return ResponseEntity.status(404).body("Booking not found");
+
+    // Get only new bookings (for notifications)
+    @GetMapping("/new")
+    public List<Booking> getNewBookings() {
+        return bookingRepository.findByStatus("Pending"); // Fetch only pending bookings
+    }
+
+    // Get booking details by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Booking> getBookingById(@PathVariable String id) {
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        if (booking == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        Booking booking = bookingOptional.get();
+        return ResponseEntity.ok(booking);
+    }
+
+    // Update booking status (Accept/Decline) & Mark as Read
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateBookingStatus(@PathVariable String id, @RequestParam String status) {
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        if (booking == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
+        }
         booking.setStatus(status);
         bookingRepository.save(booking);
-        return ResponseEntity.ok("Booking status updated successfully");
+        return ResponseEntity.ok("Booking status updated to " + status);
     }
 }

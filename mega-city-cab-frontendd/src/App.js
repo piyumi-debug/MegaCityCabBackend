@@ -6,7 +6,14 @@ import CreateAccountPage from './pages/CreateAccountPage';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import BookNow from './pages/BookNow'; // Import the BookNow page
-import AddBookingPage from "./pages/AddBookingPage"; // Import the AddBookingPage
+import AddBookingPage from "./components/AddBooking"; // Import the AddBookingPage
+import BookingReceipt from "./components/BookingReceipt";
+import BookingManagement from "./pages/BookingManagement";
+import VehicleDetails from './components/VehicleDetails';
+import AddBooking from './components/AddBooking';
+import VehicleList from './pages/VehicleList';
+import PaymentForm from "./pages/PaymentForm";
+
 
 function App() {
     return (
@@ -21,6 +28,12 @@ function App() {
                 <Route path="/book-now" element={<BookNow />} /> {/* Add BookNow route */}
                 <Route path="/add-booking" element={<AddBookingPage />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/" element={<AddBooking />} />
+                <Route path="/receipt/:id" element={<BookingReceipt />} />
+                <Route path="/admin/management" element={<BookingManagement />} />
+                <Route path="/vehicle/:id" element={<VehicleDetails />} />
+                <Route path="/vehicles/:category" element={<VehicleList />} />
+                <Route path="/payment/:id" element={<PaymentForm />} />
                 {/* Add more routes as needed */}
             </Routes>
         </Router>

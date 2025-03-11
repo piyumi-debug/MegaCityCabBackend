@@ -1,7 +1,7 @@
-package com.megacitycab.backend.controller;
+package com.megacitycab.backendd.controller;
 
-import com.megacitycab.backend.model.Setting;
-import com.megacitycab.backend.repository.SettingsRepository;
+import com.megacitycab.backendd.model.Setting;
+import com.megacitycab.backendd.repository.SettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

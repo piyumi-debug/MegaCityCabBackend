@@ -1,4 +1,4 @@
-package com.megacitycab.backend.model;
+package com.megacitycab.backendd.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

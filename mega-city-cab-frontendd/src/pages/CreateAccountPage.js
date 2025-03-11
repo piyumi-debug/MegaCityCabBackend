@@ -8,7 +8,9 @@ const CreateAccountPage = () => {
     const [role, setRole] = useState('user');
     const [error, setError] = useState('');
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // Prevent default form submission behavior
+
         // Validate inputs
         if (!username.trim()) {
             setError('Username field is empty');
@@ -34,9 +36,21 @@ const CreateAccountPage = () => {
                 password,
                 role,
             });
-            alert(response.data); // Show success message
+
+            // Show success message
+            alert(response.data.message || 'Account created successfully!');
+            setError(''); // Clear any previous errors
         } catch (err) {
-            setError(err.response?.data || 'An error occurred');
+            console.error("Error during registration:", err);
+
+            // Handle specific error cases
+            if (err.response) {
+                setError(err.response.data.message || 'An error occurred');
+            } else if (err.request) {
+                setError('No response received from the server. Please check your connection.');
+            } else {
+                setError('An unexpected error occurred.');
+            }
         }
     };
 
@@ -47,81 +61,92 @@ const CreateAccountPage = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
-                backgroundColor: '#f5f5f5',
+                background: 'linear-gradient(135deg, #667eea, #764ba2)',
             }}
         >
             <div
                 style={{
                     padding: '2rem',
                     maxWidth: '400px',
-                    border: '2px solid #ccc',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
                     backgroundColor: '#fff',
+                    textAlign: 'center',
                 }}
             >
-                <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Create Account</h2>
-                {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    style={{
-                        display: 'block',
-                        width: '100%',
-                        padding: '0.5rem',
-                        marginBottom: '1rem',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                    }}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    style={{
-                        display: 'block',
-                        width: '100%',
-                        padding: '0.5rem',
-                        marginBottom: '1rem',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                    }}
-                />
-                <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    style={{
-                        display: 'block',
-                        width: '100%',
-                        padding: '0.5rem',
-                        marginBottom: '1rem',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                    }}
-                >
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                </select>
-                <button
-                    onClick={handleSubmit}
-                    style={{
-                        padding: '0.5rem 1rem',
-                        backgroundColor: '#2196F3',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        width: '100%',
-                    }}
-                >
-                    Create Account
-                </button>
-                <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+                <h2 style={{ marginBottom: '1rem', color: '#333' }}>Create Account</h2>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        style={{
+                            display: 'block',
+                            width: '100%',
+                            padding: '0.75rem',
+                            marginBottom: '1rem',
+                            border: '1px solid #ccc',
+                            borderRadius: '6px',
+                            fontSize: '16px',
+                            boxShadow: 'inset 2px 2px 5px rgba(0,0,0,0.1)',
+                        }}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        style={{
+                            display: 'block',
+                            width: '100%',
+                            padding: '0.75rem',
+                            marginBottom: '1rem',
+                            border: '1px solid #ccc',
+                            borderRadius: '6px',
+                            fontSize: '16px',
+                            boxShadow: 'inset 2px 2px 5px rgba(0,0,0,0.1)',
+                        }}
+                    />
+                    <select
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        style={{
+                            display: 'block',
+                            width: '100%',
+                            padding: '0.75rem',
+                            marginBottom: '1rem',
+                            border: '1px solid #ccc',
+                            borderRadius: '6px',
+                            fontSize: '16px',
+                        }}
+                    >
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <button
+                        type="submit"
+                        style={{
+                            padding: '0.75rem',
+                            backgroundColor: '#4CAF50',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            width: '100%',
+                            fontSize: '16px',
+                            transition: '0.3s',
+                        }}
+                        onMouseOver={(e) => (e.target.style.backgroundColor = '#45a049')}
+                        onMouseOut={(e) => (e.target.style.backgroundColor = '#4CAF50')}
+                    >
+                        Create Account
+                    </button>
+                </form>
+                <p style={{ marginTop: '1rem', color: '#333' }}>
                     Already have an account?{' '}
-                    <Link to="/" style={{ color: '#2196F3', textDecoration: 'none' }}>
+                    <Link to="/" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
                         Login
                     </Link>
                 </p>

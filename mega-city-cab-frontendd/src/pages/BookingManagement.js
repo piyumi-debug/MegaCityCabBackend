@@ -5,84 +5,99 @@ const BookingManagement = () => {
     const [bookings, setBookings] = useState([]);
 
     useEffect(() => {
-        fetchPendingBookings();
+        const fetchBookings = async () => {
+            try {
+                const response = await axios.get("http://localhost:8082/api/bookings");
+                setBookings(response.data);
+            } catch (error) {
+                console.error("Error fetching bookings:", error);
+            }
+        };
+        fetchBookings();
     }, []);
-
-    const fetchPendingBookings = async () => {
-        try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/bookings?status=pending`);
-            setBookings(response.data);
-        } catch (error) {
-            console.error("Error fetching pending bookings:", error);
-        }
-    };
 
     const handleUpdateStatus = async (id, status) => {
         try {
-            await axios.put(`${process.env.REACT_APP_API_URL}/bookings/${id}/status`, null, {
-                params: { status },
-            });
-            fetchPendingBookings(); // Refresh the list
+            await axios.put(`http://localhost:8082/api/bookings/${id}`, null, { params: { status } });
+            setBookings((prevBookings) =>
+                prevBookings.map((booking) =>
+                    booking.id === id ? { ...booking, status } : booking
+                )
+            );
         } catch (error) {
             console.error("Error updating booking status:", error);
         }
     };
 
     return (
-        <div style={{ padding: "2rem" }}>
-            <h3>User Booking Requests</h3>
-            <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
-                <thead>
-                <tr style={{ backgroundColor: "#f5f5f5" }}>
-                    <th style={{ padding: "10px", textAlign: "left" }}>ID</th>
-                    <th style={{ padding: "10px", textAlign: "left" }}>Customer</th>
-                    <th style={{ padding: "10px", textAlign: "left" }}>Destination</th>
-                    <th style={{ padding: "10px", textAlign: "left" }}>Date</th>
-                    <th style={{ padding: "10px", textAlign: "left" }}>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
+        <div style={styles.container}>
+            <h2 style={styles.title}>Booking Management</h2>
+            <ul style={styles.list}>
                 {bookings.map((booking) => (
-                    <tr key={booking.id} style={{ borderBottom: "1px solid #ddd" }}>
-                        <td style={{ padding: "10px" }}>{booking.id}</td>
-                        <td style={{ padding: "10px" }}>{booking.customerName}</td>
-                        <td style={{ padding: "10px" }}>{booking.dropLocation}</td>
-                        <td style={{ padding: "10px" }}>{booking.date}</td>
-                        <td style={{ padding: "10px" }}>
-                            <button
-                                onClick={() => handleUpdateStatus(booking.id, "confirmed")}
-                                style={{
-                                    backgroundColor: "#2ecc71",
-                                    color: "#fff",
-                                    border: "none",
-                                    padding: "5px 10px",
-                                    borderRadius: "5px",
-                                    marginRight: "5px",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                Accept
-                            </button>
-                            <button
-                                onClick={() => handleUpdateStatus(booking.id, "declined")}
-                                style={{
-                                    backgroundColor: "#e74c3c",
-                                    color: "#fff",
-                                    border: "none",
-                                    padding: "5px 10px",
-                                    borderRadius: "5px",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                Decline
-                            </button>
-                        </td>
-                    </tr>
+                    <li key={booking.id} style={styles.bookingItem}>
+                        <p><strong>Customer Name & Vehicle ID:</strong> {booking.customerName}</p>
+                        <p><strong>Pickup Location:</strong> {booking.pickupLocation}</p>
+                        <p><strong>Drop Location:</strong> {booking.dropLocation}</p>
+                        <p><strong>Booking Date:</strong> {booking.date}</p>
+                        <p><strong>Status:</strong> <span style={styles.status}>{booking.status}</span></p>
+                        <div style={styles.buttonGroup}>
+                            <button style={styles.acceptButton} onClick={() => handleUpdateStatus(booking.id, "Accepted")}>Accept</button>
+                            <button style={styles.declineButton} onClick={() => handleUpdateStatus(booking.id, "Declined")}>Decline</button>
+                        </div>
+                    </li>
                 ))}
-                </tbody>
-            </table>
+            </ul>
         </div>
     );
+};
+
+const styles = {
+    container: {
+        padding: '20px',
+        textAlign: 'center',
+        background: '#f9f9f9',
+    },
+    title: {
+        fontSize: '24px',
+        fontWeight: 'bold',
+        marginBottom: '20px',
+    },
+    list: {
+        listStyle: 'none',
+        padding: 0,
+    },
+    bookingItem: {
+        background: '#fff',
+        padding: '15px',
+        marginBottom: '10px',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 6px rgba(0,0,0,0.1)',
+        textAlign: 'left',
+    },
+    status: {
+        fontWeight: 'bold',
+        color: '#e67e22',
+    },
+    buttonGroup: {
+        marginTop: '10px',
+    },
+    acceptButton: {
+        background: '#2ecc71',
+        color: '#fff',
+        padding: '8px 15px',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        marginRight: '10px',
+    },
+    declineButton: {
+        background: '#e74c3c',
+        color: '#fff',
+        padding: '8px 15px',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+    },
 };
 
 export default BookingManagement;

@@ -4,17 +4,19 @@ import { Link } from "react-router-dom";
 
 const UserDashboard = () => {
     const [bookings, setBookings] = useState([]);
+    const [showBookings, setShowBookings] = useState(false);
 
-    // Fetch bookings on component load
+    // Fetch bookings from API
+    const fetchBookings = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/bookings`);
+            setBookings(response.data);
+        } catch (error) {
+            console.error("Error fetching bookings:", error);
+        }
+    };
+
     useEffect(() => {
-        const fetchBookings = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/bookings`);
-                setBookings(response.data);
-            } catch (error) {
-                console.error("Error fetching bookings:", error);
-            }
-        };
         fetchBookings();
     }, []);
 
@@ -51,44 +53,49 @@ const UserDashboard = () => {
                         borderRadius: "4px",
                         cursor: "pointer",
                     }}
+                    onClick={() => setShowBookings(true)}
                 >
                     View Bookings
                 </button>
             </div>
 
-            {/* Booking History Table */}
-            <h3 style={{ marginTop: "2rem" }}>Booking History</h3>
-            <table
-                style={{
-                    width: "100%",
-                    borderCollapse: "collapse",
-                    border: "1px solid #ccc",
-                    textAlign: "left",
-                }}
-            >
-                <thead>
-                <tr style={{ backgroundColor: "#f5f5f5" }}>
-                    <th style={{ padding: "0.75rem", border: "1px solid #ccc" }}>ID</th>
-                    <th style={{ padding: "0.75rem", border: "1px solid #ccc" }}>Destination</th>
-                    <th style={{ padding: "0.75rem", border: "1px solid #ccc" }}>Date</th>
-                    <th style={{ padding: "0.75rem", border: "1px solid #ccc" }}>Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                {bookings.map((booking) => (
-                    <tr key={booking.id}>
-                        <td style={{ padding: "0.75rem", border: "1px solid #ccc" }}>{booking.id}</td>
-                        <td style={{ padding: "0.75rem", border: "1px solid #ccc" }}>{booking.dropLocation}</td>
-                        <td style={{ padding: "0.75rem", border: "1px solid #ccc" }}>{booking.date}</td>
-                        <td style={{ padding: "0.75rem", border: "1px solid #ccc" }}>
-                            {booking.status === "pending" && <span>Pending Admin Confirmation</span>}
-                            {booking.status === "confirmed" && <span>Booking Confirmed</span>}
-                            {booking.status === "declined" && <span>Booking Not Available This Time, Thank You!</span>}
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            {showBookings && (
+                <>
+                    {/* Booking History Table */}
+                    <h3 style={{ marginTop: "2rem" }}>Booking History</h3>
+                    <table
+                        style={{
+                            width: "100%",
+                            borderCollapse: "collapse",
+                            border: "1px solid #ccc",
+                            textAlign: "left",
+                        }}
+                    >
+                        <thead>
+                        <tr style={{ backgroundColor: "#f5f5f5" }}>
+                            <th style={{ padding: "0.75rem", border: "1px solid #ccc" }}>ID</th>
+                            <th style={{ padding: "0.75rem", border: "1px solid #ccc" }}>Destination</th>
+                            <th style={{ padding: "0.75rem", border: "1px solid #ccc" }}>Date</th>
+                            <th style={{ padding: "0.75rem", border: "1px solid #ccc" }}>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {bookings.map((booking) => (
+                            <tr key={booking.id}>
+                                <td style={{ padding: "0.75rem", border: "1px solid #ccc" }}>{booking.id}</td>
+                                <td style={{ padding: "0.75rem", border: "1px solid #ccc" }}>{booking.dropLocation}</td>
+                                <td style={{ padding: "0.75rem", border: "1px solid #ccc" }}>{booking.date}</td>
+                                <td style={{ padding: "0.75rem", border: "1px solid #ccc" }}>
+                                    {booking.status === "pending" && <span>Pending Admin Confirmation</span>}
+                                    {booking.status === "confirmed" && <span>Booking Confirmed</span>}
+                                    {booking.status === "declined" && <span>Booking Not Available This Time, Thank You!</span>}
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </>
+            )}
         </div>
     );
 };

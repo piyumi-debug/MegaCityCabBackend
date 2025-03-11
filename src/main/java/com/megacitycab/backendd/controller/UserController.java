@@ -1,7 +1,7 @@
-package com.megacitycab.backend.controller;
+package com.megacitycab.backendd.controller;
 
-import com.megacitycab.backend.model.User;
-import com.megacitycab.backend.repository.UserRepository;
+import com.megacitycab.backendd.model.User;
+import com.megacitycab.backendd.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
