@@ -13,6 +13,8 @@ import VehicleDetails from './components/VehicleDetails';
 import AddBooking from './components/AddBooking';
 import VehicleList from './pages/VehicleList';
 import PaymentForm from "./pages/PaymentForm";
+import AddVehiclePage from './pages/AddVehiclePage';
+import VehicleManagementPage from './pages/VehicleManagementPage';
 
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
                 <Route path="/vehicle/:id" element={<VehicleDetails />} />
                 <Route path="/vehicles/:category" element={<VehicleList />} />
                 <Route path="/payment/:id" element={<PaymentForm />} />
+                <Route path="/add-vehicle" element={<AddVehiclePage />} />
+                <Route path="/manage-vehicles" element={<VehicleManagementPage />} />
                 {/* Add more routes as needed */}
             </Routes>
         </Router>

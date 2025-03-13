@@ -4,6 +4,7 @@ import axios from 'axios';
 import UserManagement from './UserManagement';
 import BookingManagement from './BookingManagement';
 import AddVehicleForm from '../components/AddVehicleForm';
+import ManageVehicles from '../components/ManageVehicles';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -32,6 +33,8 @@ const AdminDashboard = () => {
         };
         fetchBookings();
     }, []);
+
+
 
     // Fetch new booking notifications every 10 seconds
     useEffect(() => {
@@ -100,56 +103,68 @@ const AdminDashboard = () => {
             >
                 <div>
                     <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>Admin Panel</h3>
-                    <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <li style={{ marginBottom: '10px' }}>
+                    <ul style={{listStyle: 'none', padding: 0}}>
+                        <li style={{marginBottom: '10px'}}>
                             <Link
                                 to="#"
-                                style={{ color: '#fff', textDecoration: 'none' }}
+                                style={{color: '#fff', textDecoration: 'none'}}
                                 onClick={() => setSelectedTab('users')}
                             >
                                 User Management
                             </Link>
                         </li>
-                        <li style={{ marginBottom: '10px' }}>
+                        <li style={{marginBottom: '10px'}}>
                             <Link
                                 to="#"
-                                style={{ color: '#fff', textDecoration: 'none' }}
+                                style={{color: '#fff', textDecoration: 'none'}}
                                 onClick={() => setSelectedTab('bookings')}
                             >
                                 Booking Management
                             </Link>
                         </li>
-                        <li style={{ marginBottom: '10px' }}>
+                        <li style={{marginBottom: '10px'}}>
                             <Link
                                 to="#"
-                                style={{ color: '#fff', textDecoration: 'none' }}
+                                style={{color: '#fff', textDecoration: 'none'}}
                                 onClick={() => setSelectedTab('analytics')}
                             >
                                 Add Vehicles
                             </Link>
                         </li>
-                        <li style={{ marginBottom: '10px' }}>
+                        <li style={{marginBottom: '10px'}}>
                             <Link
                                 to="#"
-                                style={{ color: '#fff', textDecoration: 'none' }}
+                                style={{color: '#fff', textDecoration: 'none'}}
                                 onClick={() => setSelectedTab('settings')}
                             >
                                 Help
                             </Link>
                         </li>
-                        <li style={{ marginBottom: '10px' }}>
+
+                        <li style={{marginBottom: '10px'}}>
                             <Link
                                 to="#"
-                                style={{ color: '#fff', textDecoration: 'none' }}
+                                style={{color: '#fff', textDecoration: 'none'}}
+                                onClick={() => setSelectedTab('manageVehicles')}
+                            >
+                                Manage Vehicles and Drivers
+                            </Link>
+                        </li>
+
+
+                        <li style={{marginBottom: '10px'}}>
+                            <Link
+                                to="#"
+                                style={{color: '#fff', textDecoration: 'none'}}
                                 onClick={() => setSelectedTab('paymentslips')}
                             >
                                 Payment Slips
                             </Link>
                         </li>
-                        <li style={{ marginBottom: '10px' }}>
+                        <li style={{marginBottom: '10px'}}>
                             <Link
                                 to="#"
-                                style={{ color: '#fff', textDecoration: 'none' }}
+                                style={{color: '#fff', textDecoration: 'none'}}
                                 onClick={() => setSelectedTab('notifications')}
                             >
                                 Notifications
@@ -197,6 +212,10 @@ const AdminDashboard = () => {
                     </>
                 )}
                 {selectedTab === 'users' && <UserManagement />}
+                {selectedTab === 'vehicles' && <ManageVehicles />}  {/* Added ManageVehicles tab */}
+                {selectedTab === 'manageVehicles' && <ManageVehicles />}
+
+
                 {selectedTab === 'bookings' && (
                     <div>
                         <h2>Manage Bookings</h2>
@@ -262,6 +281,9 @@ const AdminDashboard = () => {
                         {showAddVehicleForm && <AddVehicleForm />}
                     </div>
                 )}
+
+
+
 
                 {/* Help Section */}
                 {selectedTab === 'settings' && (

@@ -29,3 +29,9 @@ export const deleteVehicle = async (id) => {
     const response = await apiClient.delete(`/vehicles/${id}`);
     return response.data;
 };
+
+// Added updateVehicle function
+export const updateVehicle = async (id, updatedData) => {
+    const response = await apiClient.put(`/vehicles/${id}`, updatedData);
+    return response.data;
+};

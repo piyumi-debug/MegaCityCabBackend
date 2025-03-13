@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VehicleService {
@@ -44,8 +44,14 @@ public class VehicleService {
         return vehicleRepository.findByCategoryIgnoreCase(category);
     }
 
-    // Delete a vehicle by ID
-    public void deleteVehicle(String id) {
-        vehicleRepository.deleteById(id);
+    // Delete vehicle by ID
+    public boolean deleteVehicle(String id) {
+        Optional<Vehicle> vehicleOptional = vehicleRepository.findById(id);
+
+        if (vehicleOptional.isPresent()) {
+            vehicleRepository.delete(vehicleOptional.get());
+            return true; // Vehicle deleted
+        }
+        return false; // Vehicle not found
     }
 }
